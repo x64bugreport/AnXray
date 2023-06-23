@@ -187,11 +187,7 @@ jobs:
         with:
           ndk-version: r21e
           add-to-path: true
-      - uses: actions/setup-java@v2
-        with:
-          distribution: 'temurin'
-          java-version: '11'
-          cache: 'gradle'
+
       - name: Release Build
         env:
           BUILD_PLUGIN: none
