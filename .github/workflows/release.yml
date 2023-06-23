@@ -15,8 +15,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         
   libcore:
-    permissions:
-      contents: write
     name: Native Build (LibCore)
     runs-on: ubuntu-latest
     needs: check
@@ -59,8 +57,101 @@ jobs:
         run: ./run lib core
         env:
           ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
+        
+  shadowsocks:
+    name: Native Build (shadowsocks-rust)
+    runs-on: ubuntu-latest
+    needs: check
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Fetch Status
+        run: git submodule status 'library/shadowsocks/*' > shadowsocks_status
+      - name: Shadowsocks Cache
+        id: cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            app/libs/shadowsocks.aar
+          key: ${{ hashFiles('.github/workflows/*', 'library/shadowsocks/build.gradle.kts', 'shadowsocks_status') }}
+      - name: Install Rust
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: ./run init action shadowsocks
+        env:
+          ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
+      - name: Gradle cache
+        uses: actions/cache@v2
+        if: steps.cache.outputs.cache-hit != 'true'
+        with:
+          path: ~/.gradle
+          key: native-${{ hashFiles('**/*.gradle.kts') }}
           
-      - name: Push aar and apk to release
+      - uses: nttld/setup-ndk@v1
+        id: setup-ndk
+        with:
+          ndk-version: r21e
+          add-to-path: true
+          
+      - name: Native Build
+        if: steps.cache.outputs.cache-hit != 'true'
+        env:
+          BUILD_PLUGIN: none
+          ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
+        run: |
+          echo "sdk.dir=${ANDROID_HOME}" > local.properties
+          echo "ndk.dir=${ANDROID_NDK_HOME}" >> local.properties
+          ./run init action library
+          ./run lib shadowsocks
+		  
+          
+  shadowsocks_libev:
+    name: Native Build (shadowsocks-libev)
+    runs-on: ubuntu-latest
+    needs: check
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Fetch Status
+        run: git submodule status 'library/shadowsocks-libev/*' > shadowsocks_libev_status
+      - name: Shadowsocks Cache
+        id: cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            app/libs/shadowsocks-libev.aar
+          key: ${{ hashFiles('.github/workflows/*', 'library/shadowsocks-libev/build.gradle.kts', 'shadowsocks_libev_status') }}
+      - name: Gradle cache
+        uses: actions/cache@v2
+        if: steps.cache.outputs.cache-hit != 'true'
+        with:
+          path: ~/.gradle
+          key: native-${{ hashFiles('**/*.gradle.kts') }}
+          
+      - uses: nttld/setup-ndk@v1
+        id: setup-ndk
+        with:
+          ndk-version: r21e
+          add-to-path: true
+          
+      - name: Native Build
+        if: steps.cache.outputs.cache-hit != 'true'
+        env:
+          BUILD_PLUGIN: none
+          ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
+        run: |
+          echo "sdk.dir=${ANDROID_HOME}" > local.properties
+          echo "ndk.dir=${ANDROID_NDK_HOME}" >> local.properties
+          ./run init action library
+          ./run lib shadowsocks_libev
+		  
+  Publish:
+    name: Publish Release
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    needs: [libcore,shadowsocks,shadowsocks_libev]
+    steps:
+      - name: Push aar to release
         uses: ncipollo/release-action@v1
         with:
           artifacts: "app/libs/*.aar"
