@@ -13,12 +13,6 @@ jobs:
           permission: "write"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - uses: actions/checkout@v2
-      - uses: nttld/setup-ndk@v1
-        id: setup-ndk
-        with:
-          ndk-version: r21e
-          add-to-path: false
         
   libcore:
     name: Native Build (LibCore)
@@ -27,8 +21,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+        
       - name: Fetch Status
         run: git submodule status library/core > libcore_status
+        
       - name: LibCore Cache
         id: cache
         uses: actions/cache@v2
@@ -36,20 +32,31 @@ jobs:
           path: |
             app/libs/libcore.aar
           key: ${{ hashFiles('.github/workflows/*', 'bin/lib/core/*', 'libcore_status') }}
+          
       - name: Install Golang
         uses: actions/setup-go@v2
         if: steps.cache.outputs.cache-hit != 'true'
         with:
           go-version: 1.17.1
+          
       - name: Gradle cache
         uses: actions/cache@v2
         if: steps.cache.outputs.cache-hit != 'true'
         with:
           path: ~/.gradle
           key: native-${{ hashFiles('**/*.gradle.kts') }}
+      
+      - uses: actions/checkout@v2
+      - uses: nttld/setup-ndk@v1
+        id: setup-ndk
+        with:
+          ndk-version: r21e
+          add-to-path: false
+
       - name: Native Build
         if: steps.cache.outputs.cache-hit != 'true'
         run: ./run lib core
+        
   shadowsocks:
     name: Native Build (shadowsocks-rust)
     runs-on: ubuntu-latest
@@ -84,6 +91,7 @@ jobs:
           echo "ndk.dir=${ANDROID_HOME}/ndk/21.4.7075529" >> local.properties
           ./run init action library
           ./run lib shadowsocks
+          
   shadowsocks_libev:
     name: Native Build (shadowsocks-libev)
     runs-on: ubuntu-latest
@@ -115,6 +123,7 @@ jobs:
           echo "ndk.dir=${ANDROID_HOME}/ndk/21.4.7075529" >> local.properties
           ./run init action library
           ./run lib shadowsocks_libev
+          
   build:
     name: Gradle Build
     runs-on: ubuntu-latest
