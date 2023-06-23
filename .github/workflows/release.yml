@@ -46,12 +46,11 @@ jobs:
           path: ~/.gradle
           key: native-${{ hashFiles('**/*.gradle.kts') }}
       
-      - uses: actions/checkout@v2
       - uses: nttld/setup-ndk@v1
         id: setup-ndk
         with:
           ndk-version: r21e
-          add-to-path: false
+          add-to-path: true
 
       - name: Native Build
         if: steps.cache.outputs.cache-hit != 'true'
