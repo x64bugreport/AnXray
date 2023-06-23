@@ -85,22 +85,23 @@ jobs:
         with:
           path: ~/.gradle
           key: native-${{ hashFiles('**/*.gradle.kts') }}
+          
+      - uses: nttld/setup-ndk@v1
+        id: setup-ndk
+        with:
+          ndk-version: r21e
+          add-to-path: true
+          
       - name: Native Build
-        uses: nttld/setup-ndk@v1
-          id: setup-ndk
-          with:
-            ndk-version: r21e
-            add-to-path: true
         if: steps.cache.outputs.cache-hit != 'true'
         env:
           BUILD_PLUGIN: none
+          ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
         run: |
           echo "sdk.dir=${ANDROID_HOME}" > local.properties
           echo "ndk.dir=${ANDROID_HOME}/ndk/21.4.7075529" >> local.properties
           ./run init action library
           ./run lib shadowsocks
-        env:
-          ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
           
   shadowsocks_libev:
     name: Native Build (shadowsocks-libev)
@@ -124,22 +125,23 @@ jobs:
         with:
           path: ~/.gradle
           key: native-${{ hashFiles('**/*.gradle.kts') }}
+          
+      - uses: nttld/setup-ndk@v1
+        id: setup-ndk
+        with:
+          ndk-version: r21e
+          add-to-path: true
+          
       - name: Native Build
-        uses: nttld/setup-ndk@v1
-          id: setup-ndk
-          with:
-            ndk-version: r21e
-            add-to-path: true
         if: steps.cache.outputs.cache-hit != 'true'
         env:
           BUILD_PLUGIN: none
+          ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
         run: |
           echo "sdk.dir=${ANDROID_HOME}" > local.properties
           echo "ndk.dir=${ANDROID_HOME}/ndk/21.4.7075529" >> local.properties
           ./run init action library
           ./run lib shadowsocks_libev
-        env:
-          ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
           
   build:
     name: Gradle Build
@@ -179,14 +181,17 @@ jobs:
         with:
           path: ~/.gradle
           key: gradle-${{ hashFiles('**/*.gradle.kts') }}
+          
+      - uses: nttld/setup-ndk@v1
+        id: setup-ndk
+        with:
+          ndk-version: r21e
+          add-to-path: true
+          
       - name: Release Build
-        uses: nttld/setup-ndk@v1
-          id: setup-ndk
-          with:
-            ndk-version: r21e
-            add-to-path: true
         env:
           BUILD_PLUGIN: none
+          ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
         run: |
           echo "sdk.dir=${ANDROID_HOME}" > local.properties
           echo "ndk.dir=${ANDROID_HOME}/ndk/21.4.7075529" >> local.properties
@@ -196,8 +201,7 @@ jobs:
           APK=$(find app/build/outputs/apk -name '*arm64-v8a*.apk')
           APK=$(dirname $APK)
           echo "APK=$APK" >> $GITHUB_ENV
-        env:
-          ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
+
       - uses: actions/upload-artifact@v2
         with:
           name: APKs
@@ -315,12 +319,14 @@ jobs:
       - name: Checkout Library
         run: |
           git submodule update --init 'app/*'
+          
+      - uses: nttld/setup-ndk@v1
+        id: setup-ndk
+        with:
+          ndk-version: r21e
+          add-to-path: true
+          
       - name: Release Build
-        uses: nttld/setup-ndk@v1
-          id: setup-ndk
-          with:
-            ndk-version: r21e
-            add-to-path: true
         env:
           BUILD_PLUGIN: none
           ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
