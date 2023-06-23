@@ -101,9 +101,7 @@ jobs:
           echo "sdk.dir=${ANDROID_HOME}" > local.properties
           echo "ndk.dir=${ANDROID_NDK_HOME}" >> local.properties
           ./run init action library
-          ./run lib shadowsocks
-		  
-          
+          ./run lib shadowsocks 
   shadowsocks_libev:
     name: Native Build (shadowsocks-libev)
     runs-on: ubuntu-latest
