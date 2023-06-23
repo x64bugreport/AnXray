@@ -18,7 +18,7 @@ import kotlin.system.exitProcess
 
 private val Project.android get() = extensions.getByName<BaseExtension>("android")
 
-private val javaVersion = JavaVersion.VERSION_1_8
+private val javaVersion = JavaVersion.VERSION_11
 private lateinit var metadata: Properties
 private lateinit var localProperties: Properties
 private lateinit var flavor: String
