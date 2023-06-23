@@ -57,10 +57,3 @@ jobs:
         run: ./run lib core
         env:
           ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
-		  
-      - name: Push aar to release
-        uses: ncipollo/release-action@v1
-        with:
-          artifacts: "${{ matrix.dir }}/app/libs/*aar"
-          tag: v1.0.${{ github.run_number }}
-          token: ${{ secrets.GITHUB_TOKEN }}
