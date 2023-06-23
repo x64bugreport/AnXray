@@ -13,6 +13,8 @@ jobs:
           permission: "write"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Checkout
+        uses: actions/checkout@v3
       - name: Update submodules
         run: |
           git submodule update --init --remote     
