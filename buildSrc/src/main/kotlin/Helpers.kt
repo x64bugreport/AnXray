@@ -152,7 +152,7 @@ fun Project.setupCommon() {
 fun Project.setupKotlinCommon() {
     setupCommon()
     (android as ExtensionAware).extensions.getByName<KotlinJvmOptions>("kotlinOptions").apply {
-        jvmTarget = javaVersion.toString()
+        jvmTarget = "11"
     }
     dependencies.apply {
         add("implementation", kotlin("stdlib-jdk8"))
