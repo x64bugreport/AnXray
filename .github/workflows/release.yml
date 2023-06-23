@@ -189,7 +189,7 @@ jobs:
           add-to-path: true
       - uses: actions/setup-java@v2
         with:
-          distribution: 'oracle'
+          distribution: 'temurin'
           java-version: '11'
           cache: 'gradle'
       - name: Release Build
