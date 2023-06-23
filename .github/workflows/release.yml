@@ -55,6 +55,8 @@ jobs:
       - name: Native Build
         if: steps.cache.outputs.cache-hit != 'true'
         run: ./run lib core
+        env:
+          ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
         
   shadowsocks:
     name: Native Build (shadowsocks-rust)
