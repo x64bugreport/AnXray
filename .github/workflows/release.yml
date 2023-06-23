@@ -61,6 +61,6 @@ jobs:
       - name: Push aar and apk to release
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "client/app/libs/*.aar,client/app/build/outputs/apk/release/*.apk"
+          artifacts: "app/libs/*.aar"
           tag: v1.0.${{ github.run_number }}
           token: ${{ secrets.GITHUB_TOKEN }}
