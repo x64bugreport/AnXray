@@ -18,7 +18,7 @@ import kotlin.system.exitProcess
 
 private val Project.android get() = extensions.getByName<BaseExtension>("android")
 
-private val javaVersion = JavaVersion.VERSION_11
+private val javaVersion = JavaVersion.VERSION_1_8
 private lateinit var metadata: Properties
 private lateinit var localProperties: Properties
 private lateinit var flavor: String
@@ -101,8 +101,8 @@ fun Project.setupCommon() {
             }
         }
         compileOptions {
-            sourceCompatibility = JavaVersion.VERSION_11
-            targetCompatibility = JavaVersion.VERSION_11
+            sourceCompatibility = JavaVersion.VERSION_1_8
+            targetCompatibility = JavaVersion.VERSION_1_8
         }
         lintOptions {
             isShowAll = true
@@ -152,7 +152,7 @@ fun Project.setupCommon() {
 fun Project.setupKotlinCommon() {
     setupCommon()
     (android as ExtensionAware).extensions.getByName<KotlinJvmOptions>("kotlinOptions").apply {
-        jvmTarget = "11"
+        jvmTarget = javaVersion.toString()
     }
     dependencies.apply {
         add("implementation", kotlin("stdlib-jdk8"))
