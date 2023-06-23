@@ -13,6 +13,9 @@ jobs:
           permission: "write"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Update submodules
+        run: |
+          git submodule update --init --remote     
         
   libcore:
     permissions:
