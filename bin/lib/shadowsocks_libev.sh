@@ -2,7 +2,7 @@
 
 source "bin/init/env.sh"
 
-git submodule update --init --recursive library/shadowsocks-libev
+git submodule update --remote --recursive
 rm -rf library/shadowsocks-libev/build/outputs/aar
 ./gradlew :library:shadowsocks-libev:assembleRelease || exit 1
 mkdir -p app/libs
