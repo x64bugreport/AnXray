@@ -2,7 +2,7 @@
 
 source "bin/init/env.sh"
 
-git submodule update --init library/shadowsocks/src/main/rust/shadowsocks-rust
+git submodule update --remote --recursive
 rm -rf library/shadowsocks/build/outputs/aar
 ./gradlew :library:shadowsocks:assembleRelease || exit 1
 mkdir -p app/libs
