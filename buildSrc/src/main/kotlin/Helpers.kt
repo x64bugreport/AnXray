@@ -101,8 +101,8 @@ fun Project.setupCommon() {
             }
         }
         compileOptions {
-            sourceCompatibility = javaVersion
-            targetCompatibility = javaVersion
+            sourceCompatibility = JavaVersion.VERSION_11
+            targetCompatibility = JavaVersion.VERSION_11
         }
         lintOptions {
             isShowAll = true
