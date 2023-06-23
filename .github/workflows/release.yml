@@ -218,6 +218,7 @@ jobs:
         with:
           name: "SHA256-X86 ${{ env.SHA256_X86 }}"
           path: ${{ env.SUM_X86 }}
+
   publish:
     name: Publish Release
     if: github.event.inputs.publish != 'y'
@@ -240,6 +241,7 @@ jobs:
           find artifacts -name "*.apk" -exec cp {} apks \;
           find artifacts -name "*.sha256sum.txt" -exec cp {} apks \;
           ./ghr -delete -t "${{ github.token }}" -n "${{ github.event.inputs.tag }}" "${{ github.event.inputs.tag }}" apks
+
   upload:
     name: Upload Release
     if: github.event.inputs.upload != 'y'
@@ -270,6 +272,7 @@ jobs:
             done
           }
           upload apks/*
+          
   play:
     name: Publish to Play Store
     if: github.event.inputs.play != 'y'
